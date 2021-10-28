@@ -1,15 +1,14 @@
-# Estudo de migração para o mercado livre de energia com base na UFCA
-## IT304S - Contratação de Energia para Grandes Consumidores
-### Estudante: Byron Alejandro Acuña Acurio, R.A: 209428
-### Estudante: Diana Estefanía Chérrez Barragán, R.A: 227041
-### Estudante: Elson Yoiti Sakô, R.A: 148482
-### Estudante: João Lucas de Souza Silva, R.A: 211497
-### Estudante: Micaella Aynoã Loiola Ferreira, R.A: 265574
-### Estudante: Bruno Furtado Albuquerque, R.A: 214574
-### Professor: Dr. Luiz Carlos Pereira da Silva
-### Professor: MSc. Lia Farias
+# Traçador de Curvas I-V
+## Desenvolvimento e Códigos - Laboratório de Energia e Sistemas Fotovoltaicos da UNICAMP (LESF)
+### Pesquisador Principal: Rafael Espino Campos
+### Pesquisador: Elson Yoiti Sakô
+### Pesquisador: João Lucas de Souza Silva
+### Pesquisador: Karen Barbosa de Melo
+### Orientador: Marcelo Gradella Villalva
 
-Esse repositório faz parte do projeto de estudo de migração do mercado cativo ao livre com base na UFCA. Além do repositório, o relatório completo pode ser encontrado no formato PDF no link https://drive.google.com/file/d/1JkrBhZuN5NFp3CdZ3O2Z6Hk2lqpT2g6Q/view?usp=sharing. Os dados utilizados para o relatório inicial e final estão compilados no código principal final UFCA.ipynb. 
+Esse repositório faz parte do projeto "Desenvolvimento e construção de um protótipo de traçador eletrônico de curva I-V para a análise de módulos e strings fotovoltaicos", elaborado na dissertação de Rafael Espino Campos. A dissertação completa também está disponível na pasta do GitHub. O mesmo também apresenta uma licença para uso da tecnologia delineada no projeto Campus Sustentável. 
+
+Este trabalho foi desenvolvido através do programa de Pesquisa e Desenvolvimento do Setor Elétrico PD-00063- 3032/2017 – PA3032: “Desenvolvimento de um modelo de Campus Sustentável na UNICAMP – Laboratório vivo de aplicações de mini geração renovável, eficiência energética, monitoramento e gestão do consumo de energia”, regulado pela Agência Nacional de Energia Elétrica – ANEEL, em parceria com a empresa CPFL Brasil.
 
 A estrutura geral deste repositório é apresentada a seguir. 
 
