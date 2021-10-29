@@ -19,7 +19,7 @@ A estrutura geral deste repositório é apresentada a seguir.
 │   └── Tese            <- dados originais sem modificações
 │
 │
-├── Circuitos                <- Circuitos do traçador de curva
+├── PCBs                <- Circuitos do traçador de curva
 │
 └── Códigos            <- Códigos do Projeto
 ~~~
