@@ -208,7 +208,124 @@ s = s + pow2( Filt_V2 (N_dados-j+1) - Vp ) ;
 end
 m = r / s ;
 b = Ip-m*Vp;
-n0=round( Filt_V2 (N _dados) ) ;
+n0=round( Filt_V2 (N_dados) ) ;
+DataF_V = zeros ( 1 , N_dados+n0 ) ;
+DataF_I = zeros ( 1 , N_dados+n0 ) ;
+for j=1 : N_dados ;
+DataF_V( j ) = Filt_V2 ( j ) ;
+DataF_I ( j ) = Filt_I2 ( j ) ;
+end
+for i = 1 : n0
+x = n0-i ;
+DataF_V(N_dados+i ) = x ;
+DataF_I (N_dados+i ) = m*x + b ;
+end
+N_dados = N_dados + n0 ;
+%% Traçar a curva IV
+for i = 1 : length (Data_V)
+V_medido ( i ) = Data_V ( i )*0.0107 + 0.03;
+I_medido ( i ) = Data_I ( i )*0.0001621 + 0.0015;
+end
+hold on
+subplot (1,2,1)
+plot (V_medido , I_medido , 'b* ' ) ; % dados originais
+subplot ( 1,2,2 )
+plot (DataF_V , DataF_I , ' r * ' ) ; % dados na OPC
+
+Algoritmo C.6: Algoritmo para trasladar os dados para a STC (código em Matlab)
+clear ; clc ; close a l l
+%% Parametros obt ido s do datashe e t (Modulo CS6k-270)
+% Condicoes na STC
+Voc_stc = 37.9;
+Isc_stc = 9.32;
+Vmp_stc = 30.8;
+Imp_stc = 8.75;
+Pmax_stc = Vmp_stc* Imp_stc;
+Gstc = 1000; Tstc = 25;
+%Condições no NOCT
+Voc_noct = 35.3;
+Isc_noct = 7.52;
+Vmp_noct = 28.3;
+Imp_noct = 7.01;
+Pmax_noct = Vmp_noct* Imp_noct;
+Gnoct = 800; Tanoct = 2 0 ; % Tnoct = 43 +- 3C
+nc = 16.5/100;
+Kp = -0.4/100;
+v = -0.31/100;
+Ki = 0.05/100;
+ns = 60;
+a = 0.06; % um valor tipico do fator de correção de irradiância
+% Calculo de Tnoct (dentro da faixa), comecando em Voc, I=0
+Tnoct = Tstc + ( a*log (Gstc /Gnoct)-Voc_stc /Voc_noct + 1)/Kv;
+%% Calculo de fatores
+erro = 0.2/100;
+Rs = ns * 0.01;
+diff_min = erro*Pmax_stc; % diferença minima no inicio
+Imp_sto = Imp_noct *(1+Ki *( Tstc - Tnoct ) ) * Gstc /Gnoct;
+while Rs > 0
+Rs = Rs - 0 . 0 1 ; k = 0 ;
+Pmax_sto = 0 ;
+while ~ ( ( abs(Pmax_stc - Pmax_to ) ) < ( erro *Pmax_stc ) ) && ( k < 0 . 1 )
+k = k + 0.001;
+Vmp_sto = Vmp_noct + Voc_noct *(Kv*( Tstc - Tnoct ) + a* log (Gstc /Gnoct ) )
+- Rs *( Imp sto - Imp noct ) - k* Imp sto *( Tstc - Tnoct ) ;
+Pmax sto = Vmp sto* Imp sto ;
+end
+if abs(Pmax_stc - Pmax_sto ) < diff_min
+diff_min = abs(Pmax_stc - Pmax_sto );
+Rs_opt = Rs;
+k_opt = k;
+end
+end
+k = k_opt ; Rs = Rs_opt;
+%% Carregar dados de simulação
+RvarA = 'Data1000.csv ' ;
+MA = csvread(RvarA, 1 , 0 ) ;
+Data_Vstc = MA( : , 2 ) ;
+Data_Istc = MA( : , 3 ) ;
+RvarA = ' Data870_53.csv ' ;
+MA = csvread(RvarA , 1 , 0 ) ;
+Data_Vop = MA( : , 2 ) ;
+Data_Iop = MA( : , 3 ) ;
+N data = length(Data_Vstc) ;
+Gop = 870; Top = 5 3 ;
+for i =1 : N data
+Istc_op(i) = Data_Iop(i)* (1 + Ki *( Tstc - Top) ) * Gstc/Gop ;
+Vstc_op(i) = Data_Vop(i) + Data Vop (N_data ) * (Kv*( Tstc - Top)
++ a* log (Gstc /Gop) ) - Rs *( I s t c o p ( i ) - Data Iop ( i ) )
+- k* I s t c o p ( i ) * ( Tstc - Top ) ;
+end
+% extrapolação linear com os 2 últimos dados
+Vp = 0 ; Ip = 0 ; n = 2 ; N data = length(Istc_op);
+for j=1:n
+Vp = Vp + Vstc_op(j) ;
+Ip = Ip + Istc_op (j);
+end
+Vp = Vp/n ; Ip = Ip /n ;
+r = 0 ; s = 0 ;
+for j=1 : n
+r = r + ( Vstc_op ( j ) - Vp) * ( Istc_op ( j ) - Ip);
+s = s + pow2( Vstc_op ( j ) - Vp);
+end
+m = r / s ;
+b = Ip - m*Vp;
+n0=round( Vstc_op(1));
+Data_V = zeros ( 1 , N data+n0 ) ;
+Data_I = zeros ( 1 , N data+n0 ) ;
+for j=n0+1 : N data+n0;
+Data_V(j) = Vstc_op ( j-n0 ) ;
+Data_I (j) = Istc_op ( j-n0 ) ;
+end
+for i = 1 : n0
+Data_V( i ) = i - 1;
+Data_I ( i ) = m*( i - 1) + b ;
+end
+N_data = N_data + n0 ;
+%% Traçar a curva em  STC
+hold on
+plot (Data Vstc , Data I s t c , 'b ' , ' LineWidth ' , 2 ) ; % dados na STC do datasheet
+plot (Data V , Data I , ' r--' , ' LineWidth ' , 2 ) ; % dados na STC
+plot (Data Vop , Data Iop , ' k : ' , ' LineWidth ' , 2 ) ; % dados originais/
 ~~~
 
 
